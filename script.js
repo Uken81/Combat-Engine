@@ -1,33 +1,5 @@
-const selectNumberOfPlayersButtons = document.querySelectorAll('.select-number-of-players');
-const characterSelectionButtonsAll = document.querySelectorAll('.character-selection');
-const combatDisplay = document.querySelectorAll('.combat-display');
-//Player selection buttons.
-const playerSelectionDisplay = document.querySelectorAll('.character-selection');
-const playerOneSelectionDisplay = document.querySelectorAll('.player-one-choose-fighter-display');
-const playerTwoSelectionDisplay = document.querySelectorAll('.player-two-choose-fighter-display');
-//Player info displays.
+//check if need to keep this.
 const player1StatsDisplay = document.querySelectorAll('.player1-stats');
-const player2StatsDisplay = document.querySelectorAll('.player2-stats');
-//Turn outcome displays
-const attackOutcomeDisplay = document.getElementById('attack-outcome');
-const defenseOutcomeDisplay = document.getElementById('defense-outcome');
-const damageOutcomeDisplay = document.getElementById('damage-outcome');
-
-//Standard attack buttons.
-const attackButton1 = document.getElementById('player1-attack-button');
-const attackButton2 = document.getElementById('player2-attack-button');
-
-//Maneuver buttons
-const maneuverButtons1 = document.querySelectorAll('.maneuvers1');
-const maneuverButtons2 = document.querySelectorAll('.maneuvers2');
-
-
-//Global Vars.
-let player1;
-let player2;
-
-
-
 
 //Character Objects, move to seperate sheet??????
 const characters = {
@@ -81,7 +53,7 @@ const characters = {
     }
 }
 
-//displays/removes selected buttons or elements.
+//functions which display/removes selected buttons or elements.
 function removeElement(element) {
     element.style.display = 'none';
 }
@@ -89,6 +61,13 @@ function removeElement(element) {
 function displayElement(element) {
     element.style.display = '';
 }
+
+//Standard attack buttons.
+const attackButton1 = document.getElementById('player1-attack-button');
+const attackButton2 = document.getElementById('player2-attack-button');
+//Maneuver buttons
+const maneuverButtons1 = document.querySelectorAll('.maneuvers1');
+const maneuverButtons2 = document.querySelectorAll('.maneuvers2');
 
 function removeAllAttackAndManeuverButtons() {
     removeElement(attackButton1);
@@ -105,6 +84,11 @@ function displayAllAttackAndManeuverButtons() {
 }
 //<<<<<Begin number of players selection phase>>>>>
 //sets only number of players selection to be displayed on loading of page. called at onload().
+
+const selectNumberOfPlayersButtons = document.querySelectorAll('.select-number-of-players');
+const characterSelectionButtonsAll = document.querySelectorAll('.character-selection');
+const combatDisplay = document.querySelectorAll('.combat-display');
+
 function displayOnlyNumberOfPlayersSelection() {
     selectNumberOfPlayersButtons.forEach(displayElement);
     characterSelectionButtonsAll.forEach(removeElement);
@@ -112,14 +96,16 @@ function displayOnlyNumberOfPlayersSelection() {
 }
 
 //Displays buttons at begining of match to select if game is solo or local multiplayer.
+
+//Player selection buttons.
+const playerOneSelectionDisplay = document.querySelectorAll('.player-one-choose-fighter-display');
+const playerTwoSelectionDisplay = document.querySelectorAll('.player-two-choose-fighter-display');
+
 document.getElementById('choose-single-player').addEventListener('click', function () {
     selectNumberOfPlayersButtons.forEach(removeElement);
     characterSelectionButtonsAll.forEach(displayElement);
     playerOneSelectionDisplay.forEach(displayElement);
     playerTwoSelectionDisplay.forEach(removeElement);
-    // combatDisplay.forEach(displayElement);
-    // player1StatsDisplay.forEach(displayElement);
-
 });
 
 let isGameMultiPlayer = false;
@@ -144,6 +130,8 @@ function insertPlayerInfo(placement, player) {
     document.getElementById(`${placement}-hp`).innerHTML = `HP: ${player.hitPoints}`;
 }
 //The following two functions set up character selection phase for either single or multiplayer mode.
+let player1;
+let player2;
 function singlePlayerSetup() {
     combatDisplay.forEach(displayElement);
     insertPlayerInfo("player1", player1);
@@ -169,13 +157,18 @@ document.getElementById('submit-player-one-choice').addEventListener('click', fu
     }
 });
 
+
 document.getElementById('submit-player-two-choice').addEventListener('click', function () {
+    const player2StatsDisplay = document.querySelectorAll('.player2-stats');
     player2 = characters[document.getElementById('player-two-choose-fighter-button').value];
     player2StatsDisplay.forEach(displayElement);
     insertPlayerInfo("player2", player2);
     combatDisplay.forEach(displayElement);
 });
 //only shows if multiplayer is selected.When clicked moves game to combat phase and decides who attacks first.
+
+const playerSelectionDisplay = document.querySelectorAll('.character-selection');
+
 document.getElementById('begin-combat').addEventListener('click', function () {
     displayAllAttackAndManeuverButtons();
     determineWhoAttacksFirst();
@@ -215,6 +208,7 @@ function replaceDuplicateCharacterChoice() {
 
 //Combatants automatically roll against their speed skill, most successfull attacks first.
 //should I break this function up into smaller pieces???.
+const attackOutcomeDisplay = document.getElementById('attack-outcome');
 function determineWhoAttacksFirst() {
     let speedRoll1 = rollDiceFunction();
     let speedRoll2 = rollDiceFunction();
@@ -255,6 +249,7 @@ function rollDiceFunction() {
 }
 
 //Attack Function.
+const damageOutcomeDisplay = document.getElementById('damage-outcome');
 let rollDiceAttack;
 function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
     let attackSkillAfterModifiers = playerMakingAttack.attack - stun;
@@ -276,6 +271,7 @@ function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
 }
 
 //Defense function.
+const defenseOutcomeDisplay = document.getElementById('defense-outcome');
 let defenseResult;
 function rollAgainstDefenseSkillAndDetermineIfSuccessfull(playerMakingDefense) {
     let rollDiceDefense = rollDiceFunction();
