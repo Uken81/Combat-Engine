@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>GPVP</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="text/javascript" src="/script.js" async></script>
+</head>
+
+<body onload="displayOnlyNumberOfPlayersSelection()">
+  <div class="select-number-of-players">
+    <button id="choose-single-player" type="button">Single Player Game</button>
+    <button id="choose-multi-player" type="button">Multi Player Game</button>
+  </div>
+  <div class="character-selection">
+    <div class="player-one-choose-fighter-display">
+      <p>PLAYER ONE</p>
+      <select name="choose-character1" id="player-one-choose-fighter-button">
+        <option value="characterSam">Sam</option>
+        <option value="characterBob">Bob</option>
+        <option value="characterZac">Zac</option>
+        <option value="characterDom">Dom</option>
+        <option value="characterDave">Dave</option>
+      </select>
+      <input id="submit-player-one-choice" value="Enter Choice" type="submit">
+    </div>
+    <div class="player-two-choose-fighter-display">
+      <p>PLAYER TWO</p>
+      <select name="choose-character2" id="player-two-choose-fighter-button">
+        <option value="characterSam">Sam</option>
+        <option value="characterBob">Bob</option>
+        <option value="characterZac">Zac</option>
+        <option value="characterDom">Dom</option>
+        <option value="characterDave">Dave</option>
+      </select>
+      <input id="submit-player-two-choice" value="Enter Choice" type="submit">
+      <button id="begin-combat" type="button">Begin Combat</button>
+    </div>
+  </div>
+  <div class="combat-display">
+    <div class="Players">
+      <div class="player1-stats">
+        <p id="player-title">PLAYER 1 STATS</p>
+        <p id="player1-name"></p>
+        <p id="player1-attack"></p>
+        <p id="player1-defense"></p>
+        <p id="player1-speed"></p>
+        <p id="player1-hp"></p>
+        <div class="maneuver-section">
+          <div class="maneuvers1">
+            <button id="determined1" type="button">Determined Attack<br>+4 attack</button>
+            <button id="heavy1" type="button">Heavy Attack<br>+2 damage</button>
+            <button id="resolute1" type="button">Resolute Defense<br>+2 defense</button>
+          </div>
+        </div>
+        <div class="buttons">
+          <button id="player1-attack-button" type="button">Attack</button>
+          <!-- <button id="round" type="button">Round</button> -->
+        </div>
+      </div>
+      <hr>
+      <div class="player2-stats">
+        <p id="player-title">PLAYER 2 STATS</p>
+        <p id="player2-name"></p>
+        <p id="player2-attack"></p>
+        <p id="player2-defense"></p>
+        <p id="player2-speed"></p>
+        <p id="player2-hp"></p>
+        <div class="maneuver-section">
+          <div class="maneuvers2">
+            <button id="determined2" type="button">Determined Attack<br>+4 attack</button>
+            <button id="heavy2" type="button">Heavy Attack<br>+2 damage</button>
+            <button id="resolute2" type="button">Resolute Defense<br>+2 defense</button>
+          </div>
+        </div>
+        <div class="buttons">
+          <button id="player2-attack-button" type="button">Attack</button>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="turn outcome">
+      <p id="counter"></p>
+      <p id="outcome-title">TURN OUTCOME</p>
+      <p id="attack-outcome"></p>
+      <p id="defense-outcome"></p>
+      <p id="damage-outcome"></p>
+      <p id="stun-outcome">Stun:</p>
+      <p id="stun-number"></p>
+    </div>
+  </div>
+</body>
+
+</html>
