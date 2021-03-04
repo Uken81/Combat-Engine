@@ -115,8 +115,6 @@ document.getElementById('choose-multi-player').addEventListener('click', functio
     characterSelectionButtonsAll.forEach(displayElement);
     removeAllAttackAndManeuverButtons();
     console.log('multiplayer game selected');
-
-    // combatDisplay.forEach(displayElement);
 });
 //<<<<<End number of players selection phase>>>>>
 
@@ -128,6 +126,38 @@ function insertPlayerInfo(placement, player) {
     document.getElementById(`${placement}-defense`).innerHTML = `Defense: ${player.defense}`;
     document.getElementById(`${placement}-speed`).innerHTML = `Speed: ${player.speed}`;
     document.getElementById(`${placement}-hp`).innerHTML = `HP: ${player.hitPoints}`;
+}
+
+//When single-player chooses character this will randomly select an opponent.    
+function decideRandomPLayer2() {
+    const randomPlayerRoll = Math.floor(Math.random() * 5);
+
+    switch (randomPlayerRoll) {
+        case 0:
+            player2 = characters.characterSam;
+            break;
+        case 1:
+            player2 = characters.characterBob;
+            break;
+        case 2:
+            player2 = characters.characterZac;
+            break;
+        case 3:
+            player2 = characters.characterDom;
+            break;
+        case 4:
+            player2 = characters.characterDave;
+            break;
+    }
+    console.log('p2 is ' + player2.name);
+}
+
+// Incase random choice is same as Player1
+function replaceDuplicateCharacterChoice() {
+    if (player1 === player2) {
+        console.log('copy');
+        decideRandomPLayer2();
+    }
 }
 //The following two functions set up character selection phase for either single or multiplayer mode.
 let player1;
@@ -166,7 +196,6 @@ document.getElementById('submit-player-two-choice').addEventListener('click', fu
     combatDisplay.forEach(displayElement);
 });
 //only shows if multiplayer is selected.When clicked moves game to combat phase and decides who attacks first.
-
 const playerSelectionDisplay = document.querySelectorAll('.character-selection');
 
 document.getElementById('begin-combat').addEventListener('click', function () {
@@ -174,37 +203,6 @@ document.getElementById('begin-combat').addEventListener('click', function () {
     determineWhoAttacksFirst();
     playerSelectionDisplay.forEach(removeElement);
 });
-//When player chooses character this will randomly select an opponent.    
-function decideRandomPLayer2() {
-    const randomPlayerRoll = Math.floor(Math.random() * 5);
-
-    switch (randomPlayerRoll) {
-        case 0:
-            player2 = characters.characterSam;
-            break;
-        case 1:
-            player2 = characters.characterBob;
-            break;
-        case 2:
-            player2 = characters.characterZac;
-            break;
-        case 3:
-            player2 = characters.characterDom;
-            break;
-        case 4:
-            player2 = characters.characterDave;
-            break;
-    }
-    console.log('p2 is ' + player2.name);
-}
-
-// Incase random choice is same as Player1
-function replaceDuplicateCharacterChoice() {
-    if (player1 === player2) {
-        console.log('copy');
-        decideRandomPLayer2();
-    }
-}
 
 //Combatants automatically roll against their speed skill, most successfull attacks first.
 //should I break this function up into smaller pieces???.
@@ -251,11 +249,11 @@ function rollDiceFunction() {
 //Attack Function.
 const damageOutcomeDisplay = document.getElementById('damage-outcome');
 let rollDiceAttack;
+
 function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
     let attackSkillAfterModifiers = playerMakingAttack.attack - stun;
-    console.log('AWM: ' + attackSkillAfterModifiers);
-    rollDiceAttack = rollDiceFunction();
-
+    console.log('Attack With Modifiers: ' + attackSkillAfterModifiers);
+    rollDiceAttack = rollDiceFunction();   
     if (rollDiceAttack <= attackSkillAfterModifiers) {
         attackResult = 'success';
         checkRollForCriticalSuccess();
@@ -361,30 +359,20 @@ function playerEndTurn(playerNumber, opponentNumber) {
     //Removes attack/maneuver buttons and displays it for opponent.
     document.getElementById(`player${playerNumber}-attack-button`).style.display = 'none';
     document.getElementById(`player${opponentNumber}-attack-button`).style.display = '';
+
+    if (playerNumber === '1') {
+        maneuverButtons2.forEach(displayElement);
+        maneuverButtons1.forEach(removeElement);
+    } else {
+        maneuverButtons1.forEach(displayElement);
+        maneuverButtons2.forEach(removeElement);
+    }
+
+    // maneuverButtons.`${playerNumber}`.forEach(removeElement);
+    // maneuverButtons2.forEach(displayElement);
     console.log('<<<<<<<<<<NEW TURN>>>>>>>>>>');
-
-
 }
-// removeElement(attackButton1);
-//     removeElement(attackButton2);
-//     maneuverButtons1.forEach(removeElement);
-//     maneuverButtons2.forEach(removeElement);
-// make these into one function as much as i can.
-// function player1EndTurn() {
-//     //Defines who the defender is in a given turn so hit points can be removed if damaged.
-//     defenderPlayer = 'player1';
-//     //Removes attack/maneuver button and displays it for opponent.
-//     attackButton1.style.display = 'none';
-//     attackButton2.style.display = '';   
-// }
 
-// function player2EndTurn() {
-//     //Defines who the defender is in a given turn so hit points can be removed if damaged.
-//     defenderPlayer = 'player2';
-//     //Removes attack/maneuver button and displays it for opponent.
-//     attackButton2.style.display = 'none';
-//     attackButton1.style.display = '';   
-// }
 
 //Standard attack buttons.
 attackButton1.onclick = function () {
