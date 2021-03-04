@@ -5,7 +5,7 @@ const player1StatsDisplay = document.querySelectorAll('.player1-stats');
 const characters = {
     characterSam: {
         name: 'Sam',
-        attack: 11,
+        attack: 18,
         defense: 8,
         hitPoints: 12,
         damageModifier: 1,
@@ -249,9 +249,15 @@ function rollDiceFunction() {
 //Attack Function.
 const damageOutcomeDisplay = document.getElementById('damage-outcome');
 let rollDiceAttack;
+let isAttackDetermined;
 
 function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
     let attackSkillAfterModifiers = playerMakingAttack.attack - stun;
+    console.log(attackSkillAfterModifiers);
+    // isAttackDetermined ? attackSkillAfterModifiers + 4 : attackSkillAfterModifiers + 0;
+    if (isAttackDetermined === true) {
+        attackSkillAfterModifiers = attackSkillAfterModifiers + 4;
+    }
     console.log('Attack With Modifiers: ' + attackSkillAfterModifiers);
     rollDiceAttack = rollDiceFunction();   
     if (rollDiceAttack <= attackSkillAfterModifiers) {
@@ -350,6 +356,7 @@ function decideAttackOutcome(attacker, defender) {
 
 function resetAttackModifiers() {
     stun = 0;
+    isAttackDetermined = false;
 }
 
 //End Turn Functions.
@@ -359,7 +366,7 @@ function playerEndTurn(playerNumber, opponentNumber) {
     //Removes attack/maneuver buttons and displays it for opponent.
     document.getElementById(`player${playerNumber}-attack-button`).style.display = 'none';
     document.getElementById(`player${opponentNumber}-attack-button`).style.display = '';
-
+//find better way of doing below.
     if (playerNumber === '1') {
         maneuverButtons2.forEach(displayElement);
         maneuverButtons1.forEach(removeElement);
@@ -367,9 +374,6 @@ function playerEndTurn(playerNumber, opponentNumber) {
         maneuverButtons1.forEach(displayElement);
         maneuverButtons2.forEach(removeElement);
     }
-
-    // maneuverButtons.`${playerNumber}`.forEach(removeElement);
-    // maneuverButtons2.forEach(displayElement);
     console.log('<<<<<<<<<<NEW TURN>>>>>>>>>>');
 }
 
@@ -388,12 +392,16 @@ attackButton2.onclick = function () {
 }
 
 // Special Maneuver buttons
+
+//Determined attack.
+const determinedAttack1 = document.getElementById('determined1');
+const determinedAttack2 = document.getElementById('determined2');
 determinedAttack1.onclick = function () {
     isAttackDetermined = true;
 
     isPlayer1AllOut = true;
     decideAttackOutcome(player1, player2);
-    playerEndTurn('player1', 'player2');
+    playerEndTurn('1', '2');
 }
 
 determinedAttack2.onclick = function () {
@@ -401,5 +409,8 @@ determinedAttack2.onclick = function () {
 
     isPlayer2AllOut = true;
     decideAttackOutcome(player2, player1);
-    playerEndTurn('player2', 'player1');
+    playerEndTurn('2', '1');
 }
+
+//Heavy Attack
+
