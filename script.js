@@ -10,6 +10,7 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
+        isAttackDetermined: false,
         isAttackHeavy: false,
         isAllOut: false
         //     attack: () => {
@@ -23,6 +24,7 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
+        isAttackDetermined: false,
         isAttackHeavy: false,
         isAllOut: false
     },
@@ -33,6 +35,7 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
+        isAttackDetermined: false,
         isAttackHeavy: false,
         isAllOut: false
     },
@@ -43,6 +46,7 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
+        isAttackDetermined: false,
         isAttackHeavy: false,
         isAllOut: false
     },
@@ -53,6 +57,7 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
+        isAttackDetermined: false,
         isAttackHeavy: false,
         isAllOut: false
     }
@@ -255,12 +260,11 @@ function rollDiceFunction() {
 const damageOutcomeDisplay = document.getElementById('damage-outcome');
 let rollDiceAttack;
 let attackSkillAfterModifiers;
-let isAttackDetermined;
 
 function attackSkillModifiers(playerMakingAttack) {
     attackSkillAfterModifiers = playerMakingAttack.attack - stun;
     console.log(attackSkillAfterModifiers);
-    if (isAttackDetermined === true) {
+    if (playerMakingAttack.isAttackDetermined === true) {
         attackSkillAfterModifiers = attackSkillAfterModifiers + 4;
     }
     console.log('Attack Skill With Modifiers: ' + attackSkillAfterModifiers);
@@ -373,8 +377,6 @@ function decideAttackOutcome(attacker, defender) {
 
 function resetAttackModifiers() {
     stun = 0;
-    isAttackDetermined = false;
-    
 }
 
 //End Turn Functions.
@@ -390,16 +392,20 @@ function playerEndTurn(playerNumber, opponentNumber) {
         maneuverButtons1.forEach(removeElement);
         // isPlayer2AllOut = false;
         player2.isAllOut = false;
+        player2.isAttackDetermined = false;
         player2.isAttackHeavy = false;
     } else {
         maneuverButtons1.forEach(displayElement);
         maneuverButtons2.forEach(removeElement);
         // isPlayer1AllOut = false;
         player1.isAllOut = false;
+        player1.isAttackDetermined = false;
         player1.isAttackHeavy = false;
     }
     console.log(`P1 all out: ${player1.isAllOut}`);
     console.log(`P2 all out: ${player2.isAllOut}`);
+    console.log(`P1 determined attack: ${player1.isAttackDetermined}`);
+    console.log(`P2 determined attack: ${player2.isAttackDetermined}`);
     console.log(`P1 heavy attack: ${player1.isAttackHeavy}`);
     console.log(`P2 heavy attack: ${player2.isAttackHeavy}`);
     console.log('<<<<<<<<<<NEW TURN>>>>>>>>>>');
@@ -425,20 +431,14 @@ attackButton2.onclick = function () {
 const determinedAttack1 = document.getElementById('determined1');
 const determinedAttack2 = document.getElementById('determined2');
 determinedAttack1.onclick = function () {
-    isAttackDetermined = true;
-
-    isPlayer1AllOut = true;
-
+    player1.isAttackDetermined = true;
     player1.isAllOut = true;
     decideAttackOutcome(player1, player2);
     playerEndTurn('1', '2');
 }
 
 determinedAttack2.onclick = function () {
-    isAttackDetermined = true;
-
-    isPlayer2AllOut = true;
-
+    player2.isAttackDetermined = true;
     player2.isAllOut = true;
     decideAttackOutcome(player2, player1);
     playerEndTurn('2', '1');
