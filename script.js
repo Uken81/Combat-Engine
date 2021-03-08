@@ -10,7 +10,8 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
-        isStunned: 0
+        isAttackHeavy: false,
+        isAllOut: false
         //     attack: () => {
 
         //     }
@@ -22,7 +23,8 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
-        isStunned: 0
+        isAttackHeavy: false,
+        isAllOut: false
     },
     characterZac: {
         name: 'Zac',
@@ -31,7 +33,8 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
-        isStunned: 0
+        isAttackHeavy: false,
+        isAllOut: false
     },
     characterDom: {
         name: 'Dom',
@@ -40,7 +43,8 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
-        isStunned: 0
+        isAttackHeavy: false,
+        isAllOut: false
     },
     characterDave: {
         name: 'Dave',
@@ -49,7 +53,8 @@ const characters = {
         hitPoints: 12,
         damageModifier: 1,
         speed: 10,
-        isStunned: 0
+        isAttackHeavy: false,
+        isAllOut: false
     }
 }
 
@@ -246,19 +251,23 @@ function rollDiceFunction() {
     return rollResult;
 }
 
-//Attack Function.
+//Attack Functions.
 const damageOutcomeDisplay = document.getElementById('damage-outcome');
 let rollDiceAttack;
+let attackSkillAfterModifiers;
 let isAttackDetermined;
 
-function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
-    let attackSkillAfterModifiers = playerMakingAttack.attack - stun;
+function attackSkillModifiers(playerMakingAttack) {
+    attackSkillAfterModifiers = playerMakingAttack.attack - stun;
     console.log(attackSkillAfterModifiers);
-    // isAttackDetermined ? attackSkillAfterModifiers + 4 : attackSkillAfterModifiers + 0;
     if (isAttackDetermined === true) {
         attackSkillAfterModifiers = attackSkillAfterModifiers + 4;
     }
-    console.log('Attack With Modifiers: ' + attackSkillAfterModifiers);
+    console.log('Attack Skill With Modifiers: ' + attackSkillAfterModifiers);
+}
+
+function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
+    attackSkillModifiers(playerMakingAttack);
     rollDiceAttack = rollDiceFunction();   
     if (rollDiceAttack <= attackSkillAfterModifiers) {
         attackResult = 'success';
@@ -279,8 +288,11 @@ const defenseOutcomeDisplay = document.getElementById('defense-outcome');
 let defenseResult;
 function rollAgainstDefenseSkillAndDetermineIfSuccessfull(playerMakingDefense) {
     let rollDiceDefense = rollDiceFunction();
+    //deleteVVVV
+    console.log(playerMakingDefense.isAllOut);
+    console.log(characters);
 
-    if (wasLastAttackCritical === true) {
+    if (wasLastAttackCritical || playerMakingDefense.isAllOut === true) {
         defenseResult = 'failure';
         defenseOutcomeDisplay.innerHTML = `${playerMakingDefense.name} is struck by a critcal attack and can not defend`;
     } else if (rollDiceDefense > playerMakingDefense.defense) {
@@ -323,7 +335,12 @@ function determineFinalDamage(attacker, characterTakingDamage) {
 
     if (attackResult === 'success' && defenseResult === 'failure') {
         damageRoll = rollDamage();
-        finalDamage = damageRoll + attacker.damageModifier;
+        if (attacker.isAttackHeavy === true) {
+            finalDamage = damageRoll + 2 + attacker.damageModifier;
+        } else {
+            finalDamage = damageRoll + attacker.damageModifier;
+        }
+        
         newHp = characterTakingDamage.hitPoints - finalDamage;
         characterTakingDamage.hitPoints = newHp;
         document.getElementById(`${defenderPlayer}-hp`).innerHTML = `HP: ${newHp}`;
@@ -357,6 +374,7 @@ function decideAttackOutcome(attacker, defender) {
 function resetAttackModifiers() {
     stun = 0;
     isAttackDetermined = false;
+    
 }
 
 //End Turn Functions.
@@ -370,10 +388,20 @@ function playerEndTurn(playerNumber, opponentNumber) {
     if (playerNumber === '1') {
         maneuverButtons2.forEach(displayElement);
         maneuverButtons1.forEach(removeElement);
+        // isPlayer2AllOut = false;
+        player2.isAllOut = false;
+        player2.isAttackHeavy = false;
     } else {
         maneuverButtons1.forEach(displayElement);
         maneuverButtons2.forEach(removeElement);
+        // isPlayer1AllOut = false;
+        player1.isAllOut = false;
+        player1.isAttackHeavy = false;
     }
+    console.log(`P1 all out: ${player1.isAllOut}`);
+    console.log(`P2 all out: ${player2.isAllOut}`);
+    console.log(`P1 heavy attack: ${player1.isAttackHeavy}`);
+    console.log(`P2 heavy attack: ${player2.isAttackHeavy}`);
     console.log('<<<<<<<<<<NEW TURN>>>>>>>>>>');
 }
 
@@ -400,6 +428,8 @@ determinedAttack1.onclick = function () {
     isAttackDetermined = true;
 
     isPlayer1AllOut = true;
+
+    player1.isAllOut = true;
     decideAttackOutcome(player1, player2);
     playerEndTurn('1', '2');
 }
@@ -408,9 +438,28 @@ determinedAttack2.onclick = function () {
     isAttackDetermined = true;
 
     isPlayer2AllOut = true;
+
+    player2.isAllOut = true;
     decideAttackOutcome(player2, player1);
     playerEndTurn('2', '1');
 }
 
 //Heavy Attack
+const heavyAttack1 = document.getElementById('heavy1');
+const heavyAttack2 = document.getElementById('heavy2');
 
+heavyAttack1.onclick = function () {
+    player1.isAttackHeavy = true;
+    player1.isAllOut = true;
+
+    decideAttackOutcome(player1, player2);
+    playerEndTurn('1', '2');
+}
+
+heavyAttack2.onclick = function () {
+    player2.isAttackHeavy = true;
+    player2.isAllOut = true;
+
+    decideAttackOutcome(player2, player1);
+    playerEndTurn('2', '1');
+}
