@@ -12,7 +12,8 @@ const characters = {
         speed: 10,
         isAttackDetermined: false,
         isAttackHeavy: false,
-        isAllOut: false
+        isAllOut: false,
+        isDefenseResolute: false
         //     attack: () => {
 
         //     }
@@ -26,7 +27,8 @@ const characters = {
         speed: 10,
         isAttackDetermined: false,
         isAttackHeavy: false,
-        isAllOut: false
+        isAllOut: false,
+        isDefenseResolute: false
     },
     characterZac: {
         name: 'Zac',
@@ -37,7 +39,8 @@ const characters = {
         speed: 10,
         isAttackDetermined: false,
         isAttackHeavy: false,
-        isAllOut: false
+        isAllOut: false,
+        isDefenseResolute: false
     },
     characterDom: {
         name: 'Dom',
@@ -48,7 +51,8 @@ const characters = {
         speed: 10,
         isAttackDetermined: false,
         isAttackHeavy: false,
-        isAllOut: false
+        isAllOut: false,
+        isDefenseResolute: false
     },
     characterDave: {
         name: 'Dave',
@@ -59,7 +63,8 @@ const characters = {
         speed: 10,
         isAttackDetermined: false,
         isAttackHeavy: false,
-        isAllOut: false
+        isAllOut: false,
+        isDefenseResolute: false
     }
 }
 
@@ -290,16 +295,25 @@ function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
 //Defense function.
 const defenseOutcomeDisplay = document.getElementById('defense-outcome');
 let defenseResult;
+let defenseSkillAfterModifiers;
+
+function defenseSkillModifiers(playerMakingDefense) {
+    if (playerMakingDefense.isDefenseResolute === true) {
+        defenseSkillAfterModifiers = playerMakingDefense.defense + 2;
+    } else {
+        defenseSkillAfterModifiers = playerMakingDefense.defense;
+    }
+    console.log('Defense Skill With Modifiers: ' + defenseSkillAfterModifiers);
+}
+
 function rollAgainstDefenseSkillAndDetermineIfSuccessfull(playerMakingDefense) {
     let rollDiceDefense = rollDiceFunction();
-    //deleteVVVV
-    console.log(playerMakingDefense.isAllOut);
-    console.log(characters);
-
+    
+    defenseSkillModifiers(playerMakingDefense);
     if (wasLastAttackCritical || playerMakingDefense.isAllOut === true) {
         defenseResult = 'failure';
         defenseOutcomeDisplay.innerHTML = `${playerMakingDefense.name} is struck by a critcal attack and can not defend`;
-    } else if (rollDiceDefense > playerMakingDefense.defense) {
+    } else if (rollDiceDefense > defenseSkillAfterModifiers) {
         defenseResult = 'failure';
 
         defenseOutcomeDisplay.innerHTML = `${playerMakingDefense.name} defense of ${rollDiceDefense} is a ${defenseResult}`;
@@ -394,6 +408,7 @@ function playerEndTurn(playerNumber, opponentNumber) {
         player2.isAllOut = false;
         player2.isAttackDetermined = false;
         player2.isAttackHeavy = false;
+        player2.isDefenseResolute = false;
     } else {
         maneuverButtons1.forEach(displayElement);
         maneuverButtons2.forEach(removeElement);
@@ -401,6 +416,7 @@ function playerEndTurn(playerNumber, opponentNumber) {
         player1.isAllOut = false;
         player1.isAttackDetermined = false;
         player1.isAttackHeavy = false;
+        player1.isDefenseResolute = false;
     }
     console.log(`P1 all out: ${player1.isAllOut}`);
     console.log(`P2 all out: ${player2.isAllOut}`);
@@ -408,6 +424,8 @@ function playerEndTurn(playerNumber, opponentNumber) {
     console.log(`P2 determined attack: ${player2.isAttackDetermined}`);
     console.log(`P1 heavy attack: ${player1.isAttackHeavy}`);
     console.log(`P2 heavy attack: ${player2.isAttackHeavy}`);
+    console.log(`P1 resolute defense: ${player1.isDefenseResolute}`);
+    console.log(`P2 resolute defense: ${player2.isDefenseResolute}`);
     console.log('<<<<<<<<<<NEW TURN>>>>>>>>>>');
 }
 
@@ -461,5 +479,19 @@ heavyAttack2.onclick = function () {
     player2.isAllOut = true;
 
     decideAttackOutcome(player2, player1);
+    playerEndTurn('2', '1');
+}
+
+//Resolute Defense
+const resoluteDefense1 = document.getElementById('resolute1');
+const resoluteDefense2 = document.getElementById('resolute2');
+
+resoluteDefense1.onclick = function () {
+    player1.isDefenseResolute = true;
+    playerEndTurn('1', '2');
+}
+
+resoluteDefense2.onclick = function () {
+    player2.isDefenseResolute = true;
     playerEndTurn('2', '1');
 }
