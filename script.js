@@ -177,6 +177,7 @@ function replaceDuplicateCharacterChoice() {
 //The following two functions set up character selection phase for either single or multiplayer mode.
 let player1;
 let player2;
+
 function singlePlayerSetup() {
     combatDisplay.forEach(displayElement);
     insertPlayerInfo("player1", player1);
@@ -222,6 +223,7 @@ document.getElementById('begin-combat').addEventListener('click', function () {
 //Combatants automatically roll against their speed skill, most successfull attacks first.
 //should I break this function up into smaller pieces???.
 const attackOutcomeDisplay = document.getElementById('attack-outcome');
+
 function determineWhoAttacksFirst() {
     let speedRoll1 = rollDiceFunction();
     let speedRoll2 = rollDiceFunction();
@@ -277,7 +279,7 @@ function attackSkillModifiers(playerMakingAttack) {
 
 function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
     attackSkillModifiers(playerMakingAttack);
-    rollDiceAttack = rollDiceFunction();   
+    rollDiceAttack = rollDiceFunction();
     if (rollDiceAttack <= attackSkillAfterModifiers) {
         attackResult = 'success';
         checkRollForCriticalSuccess();
@@ -289,7 +291,7 @@ function rollAgainstAttackSkillAndDetermineIfSuccessfull(playerMakingAttack) {
     console.log(playerMakingAttack.name + ' attacks,' + ' it is a ' + attackResult + ' with a roll of ' + rollDiceAttack);
     //resets the display for damage Outcome.
     damageOutcomeDisplay.innerHTML = '';
-    resetAttackModifiers();
+    resetStun();
 }
 
 //Defense function.
@@ -308,7 +310,7 @@ function defenseSkillModifiers(playerMakingDefense) {
 
 function rollAgainstDefenseSkillAndDetermineIfSuccessfull(playerMakingDefense) {
     let rollDiceDefense = rollDiceFunction();
-    
+
     defenseSkillModifiers(playerMakingDefense);
     if (wasLastAttackCritical || playerMakingDefense.isAllOut === true) {
         defenseResult = 'failure';
@@ -328,6 +330,7 @@ function rollAgainstDefenseSkillAndDetermineIfSuccessfull(playerMakingDefense) {
 
 //Critical success and failures.
 let wasLastAttackCritical;
+
 function checkRollForCriticalSuccess() {
 
     if (rollDiceAttack <= 4) {
@@ -341,6 +344,7 @@ function checkRollForCriticalSuccess() {
 
 //Damage functions.
 let damageRoll;
+
 function rollDamage() {
     let die = Math.floor(Math.random() * 6 + 1);
     damageRoll = die;
@@ -348,6 +352,7 @@ function rollDamage() {
 }
 
 let finalDamage;
+
 function determineFinalDamage(attacker, characterTakingDamage) {
     let newHp;
 
@@ -358,7 +363,7 @@ function determineFinalDamage(attacker, characterTakingDamage) {
         } else {
             finalDamage = damageRoll + attacker.damageModifier;
         }
-        
+
         newHp = characterTakingDamage.hitPoints - finalDamage;
         characterTakingDamage.hitPoints = newHp;
         document.getElementById(`${defenderPlayer}-hp`).innerHTML = `HP: ${newHp}`;
@@ -371,6 +376,7 @@ function determineFinalDamage(attacker, characterTakingDamage) {
     console.log('NewHP: ' + newHp);
 }
 let stun = 0;
+
 function determineStun() {
     finalDamage <= 4 && finalDamage > 0 ? stun = finalDamage : stun = 0;
     if (finalDamage <= 4) {
@@ -389,8 +395,15 @@ function decideAttackOutcome(attacker, defender) {
     determineFinalDamage(attacker, defender);
 }
 
-function resetAttackModifiers() {
+function resetStun() {
     stun = 0;
+}
+
+function resetModifiers(player) {
+    player.isAllOut = false;
+    player.isAttackDetermined = false;
+    player.isAttackHeavy = false;
+    player.isDefenseResolute = false;
 }
 
 //End Turn Functions.
@@ -400,23 +413,15 @@ function playerEndTurn(playerNumber, opponentNumber) {
     //Removes attack/maneuver buttons and displays it for opponent.
     document.getElementById(`player${playerNumber}-attack-button`).style.display = 'none';
     document.getElementById(`player${opponentNumber}-attack-button`).style.display = '';
-//find better way of doing below.
+    //find better way of doing below.
     if (playerNumber === '1') {
         maneuverButtons2.forEach(displayElement);
         maneuverButtons1.forEach(removeElement);
-        // isPlayer2AllOut = false;
-        player2.isAllOut = false;
-        player2.isAttackDetermined = false;
-        player2.isAttackHeavy = false;
-        player2.isDefenseResolute = false;
+        resetModifiers(player2);
     } else {
         maneuverButtons1.forEach(displayElement);
         maneuverButtons2.forEach(removeElement);
-        // isPlayer1AllOut = false;
-        player1.isAllOut = false;
-        player1.isAttackDetermined = false;
-        player1.isAttackHeavy = false;
-        player1.isDefenseResolute = false;
+        resetModifiers(player1);
     }
     console.log(`P1 all out: ${player1.isAllOut}`);
     console.log(`P2 all out: ${player2.isAllOut}`);
