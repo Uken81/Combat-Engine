@@ -1,7 +1,8 @@
 //check if need to keep this.
 const player1StatsDisplay = document.querySelectorAll('.player1-stats');
+let defenderPlayer;
 
-//Character Objects, move to seperate sheet??????
+//Character Objects, move to seperate file??????
 const characters = {
     characterSam: {
         name: 'Sam',
@@ -172,6 +173,8 @@ function replaceDuplicateCharacterChoice() {
     if (player1 === player2) {
         console.log('copy');
         decideRandomPLayer2();
+        replaceDuplicateCharacterChoice();
+        placeButtonsForFirstTurn();
     }
 }
 //The following two functions set up character selection phase for either single or multiplayer mode.
@@ -185,6 +188,7 @@ function singlePlayerSetup() {
     replaceDuplicateCharacterChoice();
     insertPlayerInfo("player2", player2);
     determineWhoAttacksFirst();
+    placeButtonsForFirstTurn();
     characterSelectionButtonsAll.forEach(removeElement);
     console.log('<<<<<Begin Combat>>>>>');
 }
@@ -232,23 +236,40 @@ function determineWhoAttacksFirst() {
     console.log('P1 Speed: ' + speedRollMargin1);
     console.log('P2 Speed: ' + speedRollMargin2);
     reRollTies(speedRollMargin1, speedRollMargin2, determineWhoAttacksFirst);
-
+    displayAllAttackAndManeuverButtons();
     if (speedRollMargin1 > speedRollMargin2) {
         defenderPlayer = 'player2';
         attackOutcomeDisplay.innerHTML = `${player1.name} is quicker to react and strikes first.`;
-        maneuverButtons2.forEach(removeElement);
-        attackButton2.style.display = 'none';
+        // maneuverButtons2.forEach(removeElement);
+        // attackButton2.style.display = 'none';
+        // placeButtonsForFirstTurn();
     } else {
         defenderPlayer = 'player1';
         attackOutcomeDisplay.innerHTML = `${player2.name} is quicker to react and strikes first.`;
+        // maneuverButtons1.forEach(removeElement);
+        // attackButton1.style.display = 'none';
+        // placeButtonsForFirstTurn();
+    }
+}
+
+function placeButtonsForFirstTurn() {
+    if (defenderPlayer === 'player2') {
+        maneuverButtons2.forEach(removeElement);
+        attackButton2.style.display = 'none';
+        console.log(defenderPlayer);
+    } else {
         maneuverButtons1.forEach(removeElement);
         attackButton1.style.display = 'none';
+        console.log(defenderPlayer);
     }
+    console.log(defenderPlayer);
 }
 
 function reRollTies(element1, element2, functionToReroll) {
     if (element1 === element2) {
         functionToReroll;
+        console.log('P1 Speed: ' + speedRollMargin1);
+    console.log('P2 Speed: ' + speedRollMargin2);
     }
 }
 //<<<<<Ends character selection phase>>>>>

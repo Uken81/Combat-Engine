@@ -1,5 +1,11 @@
 Combat Engine
 
+!!check speed contest is working at start!! higher positive margins are beating lower negs.
+
+!!check ties are still working!!
+
+very rarely player1's opponent will be rerolled to a duplicate again and it does not reroll a 2nd time.
+
 make a status display for each fighter. Includes stun, if allout etc.
 
 Check all global variables to see if they can be placed in relevant functions instead. 
